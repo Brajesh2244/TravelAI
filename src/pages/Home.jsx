@@ -1,217 +1,66 @@
-import { Link } from 'react-router-dom';
-import { Search, MapPin, Sparkles, Calendar, Globe } from 'lucide-react';
-import { motion } from 'framer-motion';
-import { destinations } from '../data/destinations';
-import DestinationCard from '../components/DestinationCard';
-import { useState } from 'react';
+import { useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import { ArrowDownRight, ArrowRight, Calendar, Compass, Globe2, MapPin, Search, Sparkles } from "lucide-react";
+import { motion } from "framer-motion";
+import { destinations } from "../data/destinations";
+import DestinationCard from "../components/DestinationCard";
+import LocationSelector from "../components/LocationSelector";
 
-const Home = () => {
-  const [searchInput, setSearchInput] = useState('');
+const image = (id, width = 1400) => `https://images.unsplash.com/${id}?auto=format&fit=crop&w=${width}&q=88`;
+const heroImage = image("photo-1500534623283-312aade485b7");
+const storyImages = [image("photo-1530789253388-582c481c54b0", 1100), image("photo-1526772662000-3f88f10405ff", 1000)];
 
-  const featuredDestinations = destinations.slice(0, 6);
+const reveal = { initial: { opacity: 0, y: 28 }, whileInView: { opacity: 1, y: 0 }, viewport: { once: true, margin: "-80px" }, transition: { duration: 0.7, ease: [0.22, 1, 0.36, 1] } };
 
-  const handleSearch = (e) => {
-    e.preventDefault();
-    // Navigate to destinations page with search
-    window.location.href = `/destinations?search=${searchInput}`;
+function Home() {
+  const [searchInput, setSearchInput] = useState("");
+  const [selectedLocation, setSelectedLocation] = useState(null);
+  const navigate = useNavigate();
+  const featured = destinations.slice(0, 3);
+
+  const handleSearch = (event) => {
+    event.preventDefault();
+    const value = searchInput.trim();
+    navigate(value ? `/destinations?search=${encodeURIComponent(value)}` : "/destinations");
+  };
+
+  const handleLocationSelect = (location) => {
+    if (!location) return;
+    setSelectedLocation(location);
+    setSearchInput(location.city || location.name || location.country || "");
   };
 
   return (
-    <div>
-      {/* Hero Section */}
-      <section className="relative min-h-[90vh] flex items-center justify-center overflow-hidden">
-        {/* Video Background */}
-        <div className="absolute inset-0 z-0">
-          <video
-            autoPlay
-            loop
-            muted
-            playsInline
-            className="w-full h-full object-cover"
-          >
-            <source
-              src="https://cdn.coverr.co/videos/coverr-aerial-view-of-beautiful-resort-island-in-the-maldives-4159/1080p.mp4"
-              type="video/mp4"
-            />
-          </video>
-          <div className="absolute inset-0 bg-gradient-to-b from-black/70 via-black/50 to-[var(--surface-1)]" />
-        </div>
-
-        {/* Hero Content */}
-        <div className="relative z-10 max-w-5xl mx-auto px-4 text-center">
-          <motion.h1
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8 }}
-            className="text-5xl md:text-7xl font-bold text-white mb-6"
-            style={{ letterSpacing: '-0.02em' }}
-          >
-            Explore the World
-            <br />
-            <span className="text-[var(--accent)]">Differently</span>
-          </motion.h1>
-
-          <motion.p
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 0.2 }}
-            className="text-xl text-gray-300 mb-12 max-w-2xl mx-auto"
-          >
-            Discover amazing destinations with AI-powered travel planning and real-time insights
-          </motion.p>
-
-          {/* Search Bar */}
-          <motion.form
-            onSubmit={handleSearch}
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 0.4 }}
-            className="max-w-2xl mx-auto mb-8"
-          >
-            <div className="relative">
-              <Search className="absolute left-6 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" />
-              <input
-                type="text"
-                value={searchInput}
-                onChange={(e) => setSearchInput(e.target.value)}
-                placeholder="Where do you want to go?"
-                className="w-full pl-14 pr-4 py-5 bg-white/10 backdrop-blur-md border border-white/20 rounded-full text-white placeholder-gray-300 text-lg focus:outline-none focus:border-[var(--accent)] transition-colors"
-              />
-            </div>
-          </motion.form>
-
-          {/* CTA Buttons */}
-          <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 0.6 }}
-            className="flex flex-col sm:flex-row gap-4 justify-center"
-          >
-            <Link
-              to="/destinations"
-              className="px-8 py-4 bg-[var(--accent)] text-white rounded-full font-medium hover:opacity-90 transition-opacity"
-            >
-              Explore Destinations
-            </Link>
-            <Link
-              to="/planner"
-              className="px-8 py-4 bg-white/10 backdrop-blur-md border border-white/20 text-white rounded-full font-medium hover:bg-white/20 transition-colors"
-            >
-              Plan with AI
-            </Link>
+    <div className="overflow-hidden">
+      <section className="relative min-h-screen flex items-end overflow-hidden hero-cinematic">
+        <video autoPlay loop muted playsInline preload="metadata" poster={heroImage} className="hero-video" aria-label="Cinematic travel landscape">
+          <source src="/media/307130.mp4" type="video/mp4" />
+        </video>
+        <div className="hero-overlay hero-overlay-horizontal" />
+        <div className="hero-overlay hero-overlay-bottom" />
+        <div className="relative z-10 page-shell w-full pt-32 pb-10 sm:pb-14">
+          <motion.div initial={{ opacity: 0, y: 30, filter: "blur(8px)" }} animate={{ opacity: 1, y: 0, filter: "blur(0px)" }} transition={{ duration: 0.9, ease: [0.22, 1, 0.36, 1] }} className="max-w-4xl">
+            <p className="eyebrow mb-5">AI-powered travel planning</p>
+            <h1 className="text-[clamp(3.5rem,8vw,8rem)] text-white leading-[0.84] font-semibold max-w-4xl">Explore the world<br /><em className="text-[var(--accent)] not-italic">beyond ordinary.</em></h1>
+            <p className="text-base sm:text-xl text-white/85 max-w-xl mt-7 mb-7">Curated places, considered routes, and an AI companion for the journey in between.</p>
           </motion.div>
+          <motion.div initial={{ opacity: 0, y: 24 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.75, delay: 0.22 }} className="hero-search-panel max-w-4xl surface-card rounded-2xl p-3 sm:p-4">
+            <form onSubmit={handleSearch} className="relative mb-3"><Search className="absolute left-4 top-1/2 -translate-y-1/2 text-[var(--accent)] w-5 h-5" /><input value={searchInput} onChange={(event) => setSearchInput(event.target.value)} placeholder="Where do you want to go?" className="w-full bg-[var(--surface-1)] rounded-xl border border-white/10 py-4 pl-12 pr-4 text-white placeholder-gray-400 focus:outline-none focus:border-[var(--accent)]" /></form>
+            <LocationSelector onLocationSelect={handleLocationSelect} />
+            {selectedLocation && <p className="mt-3 text-sm text-gray-300 flex items-center gap-2"><MapPin className="w-4 h-4 text-[var(--accent)]" /> Exploring from <span className="text-white">{selectedLocation.name}</span></p>}
+          </motion.div>
+          <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.75, delay: 0.38 }} className="mt-5 flex flex-wrap items-center gap-3"><Link to="/destinations" className="btn-primary">Explore destinations <ArrowRight className="w-4 h-4" /></Link><Link to="/planner" className="btn-ghost">Plan with AI <Sparkles className="w-4 h-4" /></Link></motion.div>
+          <motion.div {...reveal} className="mt-10 max-w-4xl editorial-rule pt-4 flex flex-col sm:flex-row gap-3 justify-between text-xs uppercase tracking-[.16em] text-white/65"><span>Scroll to discover</span><span className="flex items-center gap-2">TravelAI / 2026 <ArrowDownRight className="w-4 h-4 text-[var(--accent)]" /></span></motion.div>
         </div>
       </section>
 
-      {/* Featured Destinations */}
-      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.6 }}
-          className="text-center mb-12"
-        >
-          <h2 className="text-4xl font-bold text-white mb-4">Featured Destinations</h2>
-          <p className="text-gray-400 text-lg">Discover the world's most incredible places</p>
-        </motion.div>
+      <section className="page-shell pb-28 sm:pb-40"><motion.div {...reveal} className="flex items-end justify-between mb-10"><div><p className="section-kicker mb-5">The edit</p><h2 className="text-5xl sm:text-7xl text-white leading-none">Places that<br /><span className="text-[var(--accent)]">stay with you.</span></h2></div><Link to="/destinations" className="hidden sm:flex items-center gap-2 text-sm uppercase tracking-[.14em] text-white hover:text-[var(--accent)]">View all <ArrowRight className="w-4 h-4" /></Link></motion.div><div className="grid lg:grid-cols-[1.35fr_.65fr] gap-6 items-start"><DestinationCard destination={featured[0]} index={0} /><div className="grid gap-6 pt-0 lg:pt-20">{featured.slice(1).map((destination, index) => <DestinationCard key={destination.id} destination={destination} index={index + 1} />)}</div></div></section>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {featuredDestinations.map((destination, index) => (
-            <DestinationCard key={destination.id} destination={destination} index={index} />
-          ))}
-        </div>
+      <section className="bg-[var(--surface-2)] py-24 sm:py-36"><div className="page-shell"><motion.div {...reveal} className="grid lg:grid-cols-[.85fr_1.15fr] gap-12 items-center"><div><p className="section-kicker mb-5">Travel, reimagined</p><h2 className="text-5xl sm:text-7xl text-white leading-[.9] mb-8">Less planning.<br /><span className="text-[var(--accent)]">More presence.</span></h2><p className="text-gray-400 text-lg leading-relaxed max-w-md mb-8">TravelAI brings inspiration, practical insight, and a deeply personal itinerary into one calm, considered experience.</p><Link to="/about" className="btn-ghost">Our approach <ArrowRight className="w-4 h-4" /></Link></div><div className="grid grid-cols-[1.15fr_.85fr] gap-4 items-end"><motion.img whileHover={{ y: -8 }} src={storyImages[0]} alt="Traveller looking at a landscape" className="w-full aspect-[.78] object-cover rounded-[2rem]" /><motion.img whileHover={{ y: -8 }} src={storyImages[1]} alt="Coastal road" className="w-full aspect-[.82] object-cover rounded-[2rem] mb-12" /></div></motion.div></div></section>
 
-        <motion.div
-          initial={{ opacity: 0 }}
-          whileInView={{ opacity: 1 }}
-          viewport={{ once: true }}
-          className="text-center mt-12"
-        >
-          <Link
-            to="/destinations"
-            className="inline-block px-8 py-3 bg-[var(--surface-3)] text-white rounded-full font-medium hover:bg-[var(--surface-4)] transition-colors"
-          >
-            View All Destinations
-          </Link>
-        </motion.div>
-      </section>
-
-      {/* Why TravelAI Section */}
-      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.6 }}
-          className="text-center mb-16"
-        >
-          <h2 className="text-4xl font-bold text-white mb-4">Why TravelAI?</h2>
-          <p className="text-gray-400 text-lg">Your intelligent travel companion</p>
-        </motion.div>
-
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-          {[
-            {
-              icon: <Globe className="w-8 h-8" />,
-              title: 'Discover Destinations',
-              description: 'Explore curated destinations from around the world with detailed insights'
-            },
-            {
-              icon: <MapPin className="w-8 h-8" />,
-              title: 'Live Weather',
-              description: 'Get real-time weather information for any destination you plan to visit'
-            },
-            {
-              icon: <Sparkles className="w-8 h-8" />,
-              title: 'AI Assistant',
-              description: 'Chat with our AI travel expert for personalized recommendations'
-            },
-            {
-              icon: <Calendar className="w-8 h-8" />,
-              title: 'Smart Itineraries',
-              description: 'Generate customized day-by-day travel plans powered by AI'
-            }
-          ].map((feature, index) => (
-            <motion.div
-              key={index}
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.5, delay: index * 0.1 }}
-              className="bg-[var(--surface-2)] p-8 rounded-2xl border border-[var(--surface-3)] hover:border-[var(--accent)] transition-colors"
-            >
-              <div className="text-[var(--accent)] mb-4">{feature.icon}</div>
-              <h3 className="text-xl font-semibold text-white mb-3">{feature.title}</h3>
-              <p className="text-gray-400 text-sm">{feature.description}</p>
-            </motion.div>
-          ))}
-        </div>
-      </section>
-
-      {/* CTA Section */}
-      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
-        <motion.div
-          initial={{ opacity: 0, scale: 0.95 }}
-          whileInView={{ opacity: 1, scale: 1 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.6 }}
-          className="bg-gradient-to-r from-[var(--accent)]/20 to-[var(--surface-2)] p-12 rounded-3xl border border-[var(--accent)]/30 text-center"
-        >
-          <h2 className="text-4xl font-bold text-white mb-4">Ready to Start Your Journey?</h2>
-          <p className="text-gray-300 text-lg mb-8 max-w-2xl mx-auto">
-            Let AI help you plan the perfect trip tailored to your preferences and budget
-          </p>
-          <Link
-            to="/planner"
-            className="inline-block px-10 py-4 bg-[var(--accent)] text-white rounded-full font-medium text-lg hover:opacity-90 transition-opacity"
-          >
-            Plan Your Trip Now
-          </Link>
-        </motion.div>
-      </section>
+      <section className="page-shell py-24 sm:py-36"><motion.div {...reveal} className="grid sm:grid-cols-3 gap-10 border-y border-white/10 py-10"><div><Compass className="text-[var(--accent)] w-7 h-7 mb-5" /><p className="eyebrow mb-2">01 / Discover</p><h3 className="text-2xl text-white">A world worth wandering</h3></div><div><Calendar className="text-[var(--accent)] w-7 h-7 mb-5" /><p className="eyebrow mb-2">02 / Shape</p><h3 className="text-2xl text-white">Plans with room to breathe</h3></div><div><Globe2 className="text-[var(--accent)] w-7 h-7 mb-5" /><p className="eyebrow mb-2">03 / Go</p><h3 className="text-2xl text-white">The confidence to begin</h3></div></motion.div></section>
     </div>
   );
-};
+}
 
 export default Home;

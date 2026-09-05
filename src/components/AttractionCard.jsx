@@ -24,7 +24,7 @@ const AttractionCard = ({ attraction, cityName, index }) => {
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true }}
       transition={{ duration: 0.5, delay: index * 0.1 }}
-      className="bg-[var(--surface-2)] rounded-2xl overflow-hidden border border-[var(--surface-3)] hover:border-[var(--accent)] transition-all duration-300"
+      className="surface-card rounded-2xl overflow-hidden hover:-translate-y-1 hover:border-[var(--accent)]/50 transition-all duration-300"
     >
       <div className="aspect-video overflow-hidden bg-[var(--surface-3)]">
         {loading ? (
@@ -38,7 +38,7 @@ const AttractionCard = ({ attraction, cityName, index }) => {
         )}
       </div>
 
-      <div className="p-5">
+      <div className="p-6">
         <div className="flex items-center justify-between mb-2">
           <span className="inline-block px-3 py-1 bg-[var(--surface-4)] text-[var(--accent)] text-xs rounded-full">
             {attraction.category}

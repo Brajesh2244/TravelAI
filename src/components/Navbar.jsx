@@ -1,86 +1,142 @@
-import { Link, useLocation } from 'react-router-dom';
-import { useState } from 'react';
-import { Menu, X, Compass } from 'lucide-react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { useEffect, useState } from "react";
+import { Link, NavLink } from "react-router-dom";
+import { motion, AnimatePresence } from "framer-motion";
+import { Compass, Menu, X } from "lucide-react";
 
 const Navbar = () => {
-  const [isOpen, setIsOpen] = useState(false);
-  const location = useLocation();
+  const [scrolled, setScrolled] = useState(false);
+  const [mobileOpen, setMobileOpen] = useState(false);
 
-  const navLinks = [
-    { path: '/', label: 'Home' },
-    { path: '/destinations', label: 'Explore' },
-    { path: '/planner', label: 'AI Planner' },
-    { path: '/about', label: 'About' }
+  useEffect(() => {
+    const handleScroll = () => {
+      setScrolled(window.scrollY > 30);
+    };
+
+    window.addEventListener("scroll", handleScroll);
+
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+    };
+  }, []);
+
+  const navItems = [
+    { name: "Home", path: "/" },
+    { name: "Explore", path: "/destinations" },
+    { name: "AI Planner", path: "/planner" },
+    { name: "About", path: "/about" },
   ];
 
-  const isActive = (path) => location.pathname === path;
-
   return (
-    <nav className="sticky top-0 z-50 bg-[var(--surface-2)] border-b border-[var(--surface-3)]">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex justify-between items-center h-16">
-          <Link to="/" className="flex items-center space-x-2">
-            <Compass className="w-8 h-8 text-[var(--accent)]" />
-            <span className="text-xl font-semibold text-white">TravelAI</span>
-          </Link>
+    <>
+      <header
+        className={`fixed top-0 left-0 w-full z-50 transition-all duration-500 ${
+          scrolled
+            ? "bg-[#07120f]/90 backdrop-blur-xl border-b border-white/10 shadow-[0_10px_40px_rgba(0,0,0,.16)]"
+            : "bg-transparent"
+        }`}
+      >
+        <div className="page-shell">
+          <div className="h-[5.5rem] flex items-center justify-between">
+            {/* Logo */}
 
-          {/* Desktop Navigation */}
-          <div className="hidden md:flex space-x-8">
-            {navLinks.map((link) => (
-              <Link
-                key={link.path}
-                to={link.path}
-                className={`text-sm font-medium transition-colors ${
-                  isActive(link.path)
-                    ? 'text-[var(--accent)]'
-                    : 'text-gray-300 hover:text-white'
-                }`}
-              >
-                {link.label}
-              </Link>
-            ))}
-          </div>
+            <Link to="/" className="flex items-center gap-3 group">
+              <div className="w-10 h-10 rounded-xl bg-[var(--accent)] text-[#07120f] flex items-center justify-center transition-all duration-300 group-hover:rotate-6">
+                <Compass className="w-5 h-5" />
+              </div>
 
-          {/* Mobile Menu Button */}
-          <button
-            onClick={() => setIsOpen(!isOpen)}
-            className="md:hidden text-gray-300 hover:text-white"
-          >
-            {isOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
-          </button>
-        </div>
-      </div>
+              <span className="text-xl font-semibold tracking-tight text-white">
+                Travel<span className="text-[var(--accent)]">AI</span>
+              </span>
+            </Link>
 
-      {/* Mobile Navigation */}
-      <AnimatePresence>
-        {isOpen && (
-          <motion.div
-            initial={{ opacity: 0, height: 0 }}
-            animate={{ opacity: 1, height: 'auto' }}
-            exit={{ opacity: 0, height: 0 }}
-            className="md:hidden bg-[var(--surface-3)] border-t border-[var(--surface-4)]"
-          >
-            <div className="px-4 py-4 space-y-3">
-              {navLinks.map((link) => (
-                <Link
-                  key={link.path}
-                  to={link.path}
-                  onClick={() => setIsOpen(false)}
-                  className={`block py-2 text-sm font-medium transition-colors ${
-                    isActive(link.path)
-                      ? 'text-[var(--accent)]'
-                      : 'text-gray-300 hover:text-white'
-                  }`}
+            {/* Desktop Navigation */}
+
+            <nav className="hidden md:flex items-center gap-9">
+              {navItems.map((item) => (
+                <NavLink
+                  key={item.name}
+                  to={item.path}
+                  className={({ isActive }) =>
+                    `relative text-[0.72rem] uppercase tracking-[0.14em] transition-colors duration-300 ${
+                      isActive ? "text-white" : "text-gray-400 hover:text-white"
+                    }`
+                  }
                 >
-                  {link.label}
-                </Link>
+                  {({ isActive }) => (
+                    <>
+                      {item.name}
+
+                      {isActive && (
+                        <motion.div
+                          layoutId="activeNav"
+                          className="absolute -bottom-3 left-0 right-0 h-px bg-[var(--accent)]"
+                        />
+                      )}
+                    </>
+                  )}
+                </NavLink>
               ))}
+            </nav>
+
+            {/* CTA */}
+
+            <Link
+              to="/planner"
+            className="hidden md:inline-flex items-center px-5 py-2.5 rounded-xl bg-[var(--accent)] text-[#07120f] text-sm font-semibold hover:-translate-y-0.5"
+            >
+              Plan a Trip
+            </Link>
+
+            {/* Mobile Button */}
+
+            <button
+              onClick={() => setMobileOpen(!mobileOpen)}
+              className="md:hidden w-10 h-10 flex items-center justify-center border border-white/15 rounded-xl text-white"
+            >
+              {mobileOpen ? (
+                <X className="w-5 h-5" />
+              ) : (
+                <Menu className="w-5 h-5" />
+              )}
+            </button>
+          </div>
+        </div>
+      </header>
+
+      {/* Mobile Menu */}
+
+      <AnimatePresence>
+        {mobileOpen && (
+          <motion.div
+            initial={{ opacity: 0, y: -20 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -20 }}
+            className="fixed top-[5.5rem] left-0 w-full z-40 bg-[#07120f]/95 backdrop-blur-xl border-b border-white/10 md:hidden"
+          >
+            <div className="px-6 py-8 flex flex-col gap-6">
+              {navItems.map((item) => (
+                <NavLink
+                  key={item.name}
+                  to={item.path}
+                  onClick={() => setMobileOpen(false)}
+                  className="text-lg text-gray-300 hover:text-[var(--accent)] transition-colors"
+                >
+                  {item.name}
+                </NavLink>
+              ))}
+
+              <Link
+                to="/planner"
+                onClick={() => setMobileOpen(false)}
+                className="text-center px-5 py-3 rounded-full bg-[var(--accent)] text-[#07120f] font-semibold"
+              >
+                Plan a Trip
+              </Link>
             </div>
           </motion.div>
         )}
       </AnimatePresence>
-    </nav>
+    </>
   );
 };
 
