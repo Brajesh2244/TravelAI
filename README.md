@@ -1,16 +1,31 @@
-# React + Vite
+# ✈️ TravelAI — AI-Powered Smart Itinerary & Travel Planner
 
-This template provides a minimal setup to get React working in Vite with HMR and some Oxlint rules.
+<div align="center">
 
-Currently, two official plugins are available:
+[![Live Demo](https://img.shields.io/badge/Live_Demo-Launch_App-00C7B7?style=for-the-badge&logo=vercel&logoColor=white)](https://travel-ai-h-ad1d.vercel.app)
+[![React](https://img.shields.io/badge/Frontend-React_19_&_Vite-61DAFB?style=for-the-badge&logo=react&logoColor=black)](https://github.com/Brajesh2244/TravelAI)
+[![Tailwind](https://img.shields.io/badge/Styling-Tailwind_CSS_v4-38B2AC?style=for-the-badge&logo=tailwind-css&logoColor=white)](https://github.com/Brajesh2244/TravelAI)
+[![Framer Motion](https://img.shields.io/badge/Motion-Framer_Motion-0055FF?style=for-the-badge&logo=framer&logoColor=white)](https://github.com/Brajesh2244/TravelAI)
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+**An intelligent travel companion generating customized day-by-day travel itineraries, budget breakdowns, and packing checklists.**
 
-## React Compiler
+[🌐 Explore Live Application Demo](https://travel-ai-h-ad1d.vercel.app)
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+</div>
 
-## Expanding the Oxlint configuration
+---
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and Oxlint's TypeScript related rules in your project.
+## 🌟 Key Features
+- **Dynamic AI Itinerary Builder:** Plan trips with personalized activity schedules tailored to trip length, travel style, and preferences.
+- **Budget & Cost Estimation:** Detailed expense forecasts across transport, lodging, food, and sightseeing.
+- **Interactive Packing List:** Weather-aware and destination-tailored packing checklists with completion tracking.
+- **Fluid UI & Micro-interactions:** Smooth animations powered by Framer Motion and Lucide React iconography.
+
+## 🛠️ Tech Stack
+- **Framework:** React 19, Vite, React Router v7
+- **Styling & Animations:** Tailwind CSS v4, Framer Motion
+- **Icons & Components:** Lucide React, Axios
+- **Deployment:** Vercel
+
+## 🚀 Live Demo
+Experience the application live at **[travel-ai-h-ad1d.vercel.app](https://travel-ai-h-ad1d.vercel.app)**.
